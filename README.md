@@ -1,23 +1,23 @@
-SQL Scripts
+# SQL Scripts
 This Python code contains SQL queries to retrieve information from a database of employees. The questions asked in the code and their corresponding SQL scripts are:
 
-What are the names of all employees?
-SELECT DISTINCT employee_name FROM employee
+# What are the names of all employees?
+`SELECT DISTINCT employee_name FROM employee`
 
-What is the salary of each employee?
-SELECT employee_name, salary FROM employee
+# What is the salary of each employee?
+`SELECT employee_name, salary FROM employee`
 
-What are the names and hire dates of all employees who were hired after 01/01/2020?
-SELECT employee_name, hire_date FROM employee WHERE hire_date > '2020-01-01'
+# What are the names and hire dates of all employees who were hired after 01/01/2020?
+`SELECT employee_name, hire_date FROM employee WHERE hire_date > '2020-01-01'`
 
-What are the names and department of all employees who work in the Marketing department?
-SELECT employee_name FROM employee E INNER JOIN department D ON E.department_id = D.department_id WHERE D.department_name = 'Marketing'
+# What are the names and department of all employees who work in the Marketing department?
+`SELECT employee_name FROM employee E INNER JOIN department D ON E.department_id = D.department_id WHERE D.department_name = 'Marketing'`
 
-What are the names and department of all employees who do not work in the Sales department?
-SELECT E.employee_name, D.department_name FROM employee E INNER JOIN department D ON E.department_id = D.department_id WHERE D.department_name != 'Sales'
+# What are the names and department of all employees who do not work in the Sales department?
+`SELECT E.employee_name, D.department_name FROM employee E INNER JOIN department D ON E.department_id = D.department_id WHERE D.department_name != 'Sales'`
 
-What are the names, salary, and hire date of all employees who make more than $60,000 and were hired before 01/01/2022?
-SELECT employee_name, salary, hire_date FROM employee WHERE salary > 60000 AND hire_date < '2022-01-01'
+# What are the names, salary, and hire date of all employees who make more than $60,000 and were hired before 01/01/2022?
+`SELECT employee_name, salary, hire_date FROM employee WHERE salary > 60000 AND hire_date < '2022-01-01'`
 
 What is the average salary of all employees?
 SELECT AVG(salary) FROM employee
