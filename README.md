@@ -1,12 +1,12 @@
-# SQL Scripts
+## SQL Scripts
 This Python code contains SQL queries to retrieve information from a database of employees. 
 # TABLES: 
 - employee: employee_id, employee_name, department, hire_date, salary
 - department: department_id, department_name
 - job: job_id, job_title
 - job_history: employee_id, job_id, start_date, end_date
-The questions asked in the code and their corresponding SQL scripts are:
 
+## Questions:
 # What are the names of all employees?
 `SELECT DISTINCT employee_name FROM employee`
 
