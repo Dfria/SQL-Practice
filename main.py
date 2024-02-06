@@ -9,8 +9,6 @@ mydb = mysql.connector.connect(
   database="hrdatabase"
 )
 
-
-
 # create a cursor
 cursor = mydb.cursor()
 
@@ -175,3 +173,186 @@ result = cursor.fetchall()
 print("Q20: Find the department names and the number of employees who have been in each department for more than 2 years.")
 pprint(result)
 print()
+
+# Question 21: Retrieve a list of departments along with the total number of employees in each department.
+query = "SELECT D.department_name, COUNT(E.employee_id) FROM employee E INNER JOIN department D ON E.department_id = D.department_id GROUP BY department_name;"
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q21: Retrieve a list of departments along with the total number of employees in each department.")
+pprint(result)
+print()
+
+# Question 22: Find the average salary of employees hired in the year 2022.
+query = """
+SELECT AVG(E.Salary) AS AvgSalary2022 
+FROM employee E 
+WHERE YEAR(E.hire_date) = '2022';
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q22: Find the average salary of employees hired in the year 2022.")
+pprint(result)
+print()
+
+# Question 23: Identify the department with the highest total salary expenditure.
+query = """
+SELECT D.department_name, SUM(E.salary) 
+FROM employee E 
+INNER JOIN department D ON E.department_id = D.department_id
+GROUP BY department_name ORDER BY SUM(E.salary) DESC;
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q23: Identify the department with the highest total salary expenditure.")
+pprint(result)
+print()
+
+# Question 24: Retrieve a list of employees who earn more than the average salary in their respective departments.
+query = """
+SELECT E.employee_name, D.department_name, E.salary 
+FROM employee E 
+INNER JOIN department D ON E.department_id = D.department_id 
+JOIN (
+    SELECT DD.department_id, AVG(EE.salary) AS avg_salary 
+    FROM employee EE, department DD 
+    GROUP BY DD.department_id
+) AS avg_salaries ON D.department_id = E.department_id 
+WHERE avg_salaries.avg_salary < E.salary;
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q24: Retrieve a list of employees who earn more than the average salary in their respective departments.")
+pprint(result)
+print()
+
+# Question 25: Find the employee who has the highest salary and the department they belong to.
+query = """
+SELECT E.employee_name, D.department_name, E.salary 
+FROM employee E 
+INNER JOIN department D ON E.department_id = D.department_id 
+WHERE E.salary = (SELECT MAX(EE.salary) FROM employee EE);
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q25: Find the employee who has the highest salary and the department they belong to.")
+pprint(result)
+print()
+
+
+# Question 26: List the employees who have been in their current job for more than three years.
+query = """
+SELECT e.employee_id, e.employee_name, jh.job_id, j.job_title, jh.start_date 
+FROM employee e 
+JOIN job_history jh ON e.employee_id = jh.employee_id 
+JOIN job j ON jh.job_id = j.job_id 
+WHERE TIMESTAMPDIFF(YEAR, jh.start_date, CURRENT_DATE) > 3 AND jh.end_date = '';
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q26: List the employees who have been in their current job for more than three years.")
+pprint(result)
+print()
+
+# Question 27: Display the department names along with the number of distinct job titles in each department.
+query = """
+SELECT D.department_name, COUNT(J.job_title) 
+FROM employee E 
+INNER JOIN department D ON E.department_id = D.department_id
+INNER JOIN job_history JH ON E.employee_id = JH.employee_id
+INNER JOIN job J ON JH.job_id = J.job_id
+GROUP BY D.department_name ORDER BY D.department_name DESC;
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q27: Display the department names along with the number of distinct job titles in each department.")
+pprint(result)
+print()
+
+# Question 28: Find the job title with the highest number of employees.
+query = """
+SELECT J.job_title, COUNT(J.job_title) 
+FROM employee E
+INNER JOIN department D ON E.department_id = D.department_id
+INNER JOIN job_history JH ON E.employee_id = JH.employee_id
+INNER JOIN job J ON JH.job_id = J.job_id
+GROUP BY J.job_title ORDER BY COUNT(J.job_title) DESC LIMIT 1;
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q28: Find the job title with the highest number of employees.")
+pprint(result)
+print()
+
+# Question 29: List employees who have the same job title as the employee with employee_id = 1.
+query = """
+SELECT E.employee_name, J.job_title
+FROM employee E
+JOIN job_history JH ON E.employee_id = JH.employee_id
+JOIN job J ON JH.job_id = J.job_id
+WHERE J.job_id = (
+    SELECT job_id
+    FROM job_history
+    WHERE employee_id = 1 AND end_date = ''
+);
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q29: List employees who have the same job title as the employee with employee_id = 1.")
+pprint(result)
+print()
+
+# Question 30: Find the department with the fewest employees.
+query = """
+SELECT D.department_name, COUNT(E.employee_id) AS EmployeeCount
+FROM employee E
+INNER JOIN department D ON E.department_id = D.department_id
+GROUP BY department_name ORDER BY EmployeeCount ASC limit 1;
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q30: Find the department with the fewest employees.")
+pprint(result)
+print()
+
+# Question 31: Display the employee names and their job titles for employees who were hired after employee with employee_id = 5.
+query = """
+SELECT E.employee_name, J.job_title 
+FROM employee E
+INNER JOIN job_history JH ON E.employee_id = JH.employee_id
+INNER JOIN job J ON JH.job_id = J.job_id
+WHERE JH.start_date > 
+    (SELECT start_date FROM 
+        job_history WHERE 
+        employee_id = 5 AND end_date = '')
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q31: Display the employee names and their job titles for employees who were hired after employee with employee_id = 5.")
+pprint(result)
+print()
+
+# Question 32: Retrieve the job titles and the total number of employees in each job title, but exclude job titles with fewer than 3 employees.
+query = """
+SELECT J.job_title, COUNT(E.employee_id) EmployeeCount 
+FROM employee E
+INNER JOIN job_history JH ON E.employee_id = JH.employee_id
+INNER JOIN job J ON JH.job_id = J.job_id 
+GROUP BY J.job_title HAVING EmployeeCount > 3;
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print("Q32: Retrieve the job titles and the total number of employees in each job title, but exclude job titles with fewer than 3 employees.")
+pprint(result)
+print()
+
+# Question 33: Find the departments where the average salary is above the overall average salary across all departments.
+query = """
+SELECT D.department_name, AVG(E.salary) AS average_salary 
+FROM employee E 
+INNER JOIN department D ON D.department_id = E.department_id 
+GROUP BY D.department_name 
+HAVING average_salary > (SELECT AVG(salary) FROM employee);
+"""
+cursor.execute(query)
+result = cursor.fetchall()
+print
